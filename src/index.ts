@@ -13,6 +13,7 @@ import {
 	getTypescriptConfig,
 	run,
 	getSourceFiles,
+	getFiles,
 } from './utils';
 import { unwatchFile, watchFile, Stats } from 'fs-extra';
 
@@ -23,6 +24,8 @@ class TypeScriptPlugin {
 	private originalServicePath: string;
 	private isWatching = false;
 	private tsconfigFilePath?: string;
+	private include?: string[];
+	private exclude?: string[];
 
 	serverless: ServerlessTSInstance;
 	options: ServerlessTSOptions;
@@ -35,6 +38,9 @@ class TypeScriptPlugin {
 			options.tsconfigFilePath ||
 			serverless.service.custom?.typeScript?.tsconfigFilePath;
 		this.originalServicePath = this.serverless.config.servicePath;
+		this.include = serverless.service.custom?.typeScript?.include;
+		this.exclude = serverless.service.custom?.typeScript?.exclude;
+
 		this.hooks = {
 			'before:run:run': async (): Promise<void> => {
 				this.compileTs();
@@ -123,6 +129,10 @@ class TypeScriptPlugin {
 		);
 	}
 
+	get includedFileNames(): string[] {
+		return getFiles(this.include, this.exclude);
+	}
+
 	prepare(): void {
 		// exclude serverless-plugin-typescript
 		for (const fnName in this.functions) {
@@ -185,7 +195,10 @@ class TypeScriptPlugin {
 
 		tsconfig.outDir = BUILD_FOLDER;
 
-		const emitedFiles = run(this.rootFileNames, tsconfig);
+		const emitedFiles = run(
+			this.include ? this.includedFileNames : this.rootFileNames,
+			tsconfig,
+		);
 		this.serverless.cli.log('TypeScript compiled.');
 		if (!emitedFiles) {
 			this.serverless.cli.log(

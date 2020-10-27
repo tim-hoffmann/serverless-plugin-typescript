@@ -22,6 +22,8 @@ export interface ServerlessTSService {
 	custom?: {
 		typeScript?: {
 			tsconfigFilePath?: string;
+			include?: string[];
+			exclude?: string[];
 		};
 	};
 	functions: ServerlessTSFunctionMap;

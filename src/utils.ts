@@ -12,6 +12,7 @@ import {
 import * as fse from 'fs-extra';
 import _ from 'lodash';
 import * as path from 'path';
+import globby from 'globby';
 
 import { ServerlessTSFunction } from './types';
 
@@ -188,4 +189,12 @@ export const getTypescriptConfig = (
 	}
 
 	return makeDefaultTypescriptConfig();
+};
+
+export const getFiles = (include?: string[], exclude?: string[]): string[] => {
+	if (!include || !exclude) {
+		return [];
+	}
+
+	return globby.sync([...include, ...exclude.map((e) => `!${e}`)]);
 };
