@@ -5,9 +5,9 @@ import {
 	getTypescriptConfig,
 	makeDefaultTypescriptConfig,
 } from '../src/utils';
-import { ServerlessTSFunction } from '../src/types';
+import { ServerlessTSFunctionMap } from '../src/types';
 
-const functions: { [key: string]: ServerlessTSFunction } = {
+const functions: ServerlessTSFunctionMap = {
 	hello: {
 		handler: '__tests__/__fixtures__/hello.handler',
 		package: {

@@ -20,6 +20,12 @@ export interface ServerlessTSService {
 		runtime?: string;
 	};
 	custom?: {
+		/**
+		 * Custom options to be passed to this plugin.
+		 * - tsconfigFilePath: Custom tsconfig file to be used instead of
+		 *   default.
+		 * - include/exclude: Specify external typescript files (not referenced
+		 *   by lambda functions) to be included at the final bundle. */
 		typeScript?: {
 			tsconfigFilePath?: string;
 			include?: string[];
